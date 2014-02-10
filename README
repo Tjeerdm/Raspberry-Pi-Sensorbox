@@ -1,0 +1,15 @@
+Raspberry Pi Sensor Box README
+=============
+
+This programm runs, as the name already implies, on a Raspberry Pi.
+Its purpose is to read pressure sensors and send the results to
+the XCSoar program via TCP port 4353.
+The serial port of the Raspberry can be connected to a Flarm or a logger.
+The data from this serial port is send to XCSoar TCP port 4352, the
+data transfer is bidirectional and should support IGC download from Flarm
+from XCSOar version 6.8.
+
+An AHRS using the MPU9150 is implemented, however it is not yet functional (Feb 2014).
+
+The program is compiled on the Raspberry under Raspbian.
+

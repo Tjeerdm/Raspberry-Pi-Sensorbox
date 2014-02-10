@@ -1,0 +1,36 @@
+24lc16.o: 24lc16.cpp ms5611.hpp Fixed.hpp Compiler.h Constants.h \
+ bcm2835.hpp
+AirDensity.o: AirDensity.cpp AirDensity.hpp Fixed.hpp Compiler.h \
+ Constants.h
+Fixed.o: Fixed.cpp Fixed.hpp Compiler.h Constants.h
+KalmanFilter1d.o: KalmanFilter1d.cpp KalmanFilter1d.hpp Fixed.hpp \
+ Compiler.h Constants.h
+ToneSynthesiser.o: ToneSynthesiser.cpp ToneSynthesiser.hpp \
+ PCMSynthesiser.hpp ISINETABLE.h
+VarioSettings.o: VarioSettings.cpp VarioSettings.hpp Fixed.hpp Compiler.h \
+ Constants.h
+VarioSynthesiser.o: VarioSynthesiser.cpp VarioSynthesiser.hpp \
+ ToneSynthesiser.hpp PCMSynthesiser.hpp Fixed.hpp Compiler.h Constants.h \
+ Clamp.hpp
+audio_vario.o: audio_vario.cpp PCMSynthesiser.hpp VarioSynthesiser.hpp \
+ ToneSynthesiser.hpp Fixed.hpp Compiler.h Constants.h audio_vario.hpp
+bcm2835-1.35.o: bcm2835-1.35.cpp bcm2835.hpp
+bcm2835.o: bcm2835.cpp bcm2835.hpp
+config.o: config.cpp Fixed.hpp Compiler.h Constants.h config.hpp
+connect2xcsoar.o: connect2xcsoar.cpp bcm2835.hpp connect2xcsoar.hpp \
+ settings.hpp serial.hpp config.hpp Fixed.hpp Compiler.h Constants.h
+mcp3201.o: mcp3201.cpp bcm2835.hpp mcp3201.hpp
+ms5611.o: ms5611.cpp bcm2835.hpp ms5611.hpp Fixed.hpp Compiler.h \
+ Constants.h
+raspisb.o: raspisb.cpp bcm2835.hpp Fixed.hpp Compiler.h Constants.h \
+ Clamp.hpp config.hpp ms5611.hpp mcp3201.hpp 24lc16.hpp settings.hpp \
+ serial.hpp connect2xcsoar.hpp KalmanFilter1d.hpp NMEAChecksum.hpp \
+ AirDensity.hpp mpu9150/MPU9150Lib.h mpu9150/MPUQuaternion.h \
+ mpu9150/MPUVector3.h mpu9150/Arduino.h mpu9150/CalLib.h mpu9150/CalLib.h \
+ mpu9150/dmpKey.h mpu9150/dmpmap.h mpu9150/inv_mpu.h \
+ mpu9150/../bcm2835.hpp mpu9150/inv_mpu_dmp_motion_driver.h \
+ VarioSynthesiser.hpp ToneSynthesiser.hpp PCMSynthesiser.hpp \
+ audio_vario.hpp
+serial.o: serial.cpp serial.hpp config.hpp Fixed.hpp Compiler.h \
+ Constants.h
+settings.o: settings.cpp serial.hpp

@@ -1,0 +1,8 @@
+CalLib.o: CalLib.cpp CalLib.h Arduino.h ../24lc16.hpp
+MPU9150Lib.o: MPU9150Lib.cpp MPU9150Lib.h MPUQuaternion.h MPUVector3.h \
+ Arduino.h CalLib.h inv_mpu.h ../bcm2835.hpp inv_mpu_dmp_motion_driver.h
+MPUQuaternion.o: MPUQuaternion.cpp MPUQuaternion.h MPUVector3.h Arduino.h
+MPUVector3.o: MPUVector3.cpp MPUVector3.h Arduino.h
+inv_mpu.o: inv_mpu.cpp inv_mpu.h ../bcm2835.hpp
+inv_mpu_dmp_motion_driver.o: inv_mpu_dmp_motion_driver.cpp inv_mpu.h \
+ ../bcm2835.hpp inv_mpu_dmp_motion_driver.h dmpKey.h dmpmap.h
