@@ -52,10 +52,12 @@ static void PRSB1(char *b)
 static void PRSB2(char *b)
 {
   char riff_header[44];
-  if (strstr(b, "IRD_WAV_BEEPBWEEP")) beep_file = open("/boot/beep_bweep.wav", O_RDONLY);
-  else if (strstr(b, "IRD_WAV_CLEAR")) beep_file = open("/boot/beep_clear.wav", O_RDONLY);
-  else if (strstr(b, "IRD_WAV_DRIP")) beep_file = open("/boot/beep_drip.wav", O_RDONLY);
-  if (beep_file >= 0) { read(beep_file, riff_header, sizeof riff_header); printf("wav\n"); fflush(stdout); }
+  if (beep_file <0) {
+    if (strstr(b, "IRD_WAV_BEEPBWEEP")) beep_file = open("/boot/beep_bweep.wav", O_RDONLY);
+    else if (strstr(b, "IRD_WAV_CLEAR")) beep_file = open("/boot/beep_clear.wav", O_RDONLY);
+    else if (strstr(b, "IRD_WAV_DRIP")) beep_file = open("/boot/beep_drip.wav", O_RDONLY);
+    if (beep_file >= 0) read(beep_file, riff_header, sizeof riff_header);
+  }
 }
 
 /*
