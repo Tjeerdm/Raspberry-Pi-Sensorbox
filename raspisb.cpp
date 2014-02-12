@@ -37,6 +37,7 @@ Copyright_License {
 #include <arpa/inet.h>
 #include <alsa/asoundlib.h>
 
+#include "raspisb.hpp"
 #include "bcm2835.hpp"
 #include "Fixed.hpp"
 #include "Clamp.hpp"
@@ -146,7 +147,7 @@ static float r2d(const float r)
 
 int main(int argc, char **argv)
 {
-  int sock, ahrs_sock = 0;
+  int sock, serial_sock, ahrs_sock=-1;
 
   snd_pcm_t *alsa_handle = NULL;
   VarioSynthesiser synth;
@@ -235,10 +236,10 @@ int main(int argc, char **argv)
   }
 
   /*
-   * Prepare network connection for air data using TCP.
-   * Could use UDP but settings does not work over UDP.
+   * Prepare network connections for air data and serial data using TCP.
    */ 
   sock = socket(AF_INET, SOCK_STREAM, 0);
+  serial_sock = socket(AF_INET, SOCK_STREAM, 0);
   
   /*
    * Try to start the mpu9150
@@ -277,7 +278,8 @@ int main(int argc, char **argv)
    * Start connection thread.
    */
   in_addr_t xcsoar = inet_addr(argv[1]);
-  new std::thread(connect2xcsoar, &sock, &ahrs_sock, &flags, xcsoar);
+  new std::thread(connect2xcsoar, sock, serial_sock, ahrs_sock,
+                                  &flags, xcsoar);
 
   printf("\n"); fflush(stdout);
 
@@ -305,13 +307,13 @@ int main(int argc, char **argv)
    * The main loop
    */
   while (1) {
-    uint64_t t = bcm2835_st_read();
-
     if (bcm2835_gpio_lev(CALIBRATE) == LOW) offset = airspeed_auto_zero(offset);
 
 #if !ALSA_ASYNC
     if (alsa_handle) alsa_fill_buffer(&synth, alsa_handle);
 #endif
+
+    uint64_t t = bcm2835_st_read();
 
     /*
      * Pressure sensors
@@ -339,7 +341,7 @@ int main(int argc, char **argv)
       case PRESS:
         if (t < state_timer) break;
         ms5611_read_press(nr_of_sensors);
-        if (ms5611[2].P > 150000) { state = IDLE; break; }
+//        if (ms5611[2].P > 150000) { state = IDLE; break; } still need this ???
         staticp = ms5611[0].P;
         totalp  = ms5611[1].P - offset;
         if (config.ecomp) {

@@ -2,5 +2,5 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
-void start_serial(in_addr_t xcsoar);
+void start_serial(int serial_sock);
 

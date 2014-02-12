@@ -24,4 +24,5 @@ Copyright_License {
 
 #include <netinet/in.h>
 
-void connect2xcsoar(int *sock, int *ahrs_sock, int *flags, in_addr_t xcsoar);
+void connect2xcsoar(int sock, int serial_sock, int ahrs_sock,
+                    int *flags, in_addr_t xcsoar);

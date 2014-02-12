@@ -34,37 +34,19 @@ Copyright_License {
 #include <arpa/inet.h>
 #include "serial.hpp"
 #include "config.hpp"
+#include "bcm2835.hpp"
 
-static int serial_socket = -1;
-std::mutex mutex;
-
-static void terminate(int ttyAMA0)
-{
-  mutex.lock();
-  if (serial_socket >= 0) {
-    close(serial_socket); serial_socket = -1;
-    close(ttyAMA0);
-  }
-  mutex.unlock();
-}
-
-static void serial_send(const struct sockaddr_in *server, int ttyAMA0)
+static void serial_send(int ttyAMA0, int serial_socket)
 {
   char b[1024];
 
-  try {
-    while (serial_socket >= 0) {
-      ssize_t l = recv(serial_socket, b, sizeof(b), 0);
-      if ((l <= 0) || (write(ttyAMA0, &b, l) != l)) throw(0);
-    }
-  }
-  catch ( ... )
-  {
-    terminate(ttyAMA0);
+  for (;;) {
+    ssize_t l = recv(serial_socket, b, sizeof(b), 0);
+    if ((l <= 0) || (write(ttyAMA0, &b, l) != l)) exit(1);
   }
 }
 
-void start_serial(in_addr_t xcsoar)
+void start_serial(int serial_sock)
 {
   int ttyAMA0 = open("/dev/ttyAMA0", O_RDWR);
   if (ttyAMA0 <= 0) return;
@@ -86,29 +68,11 @@ void start_serial(in_addr_t xcsoar)
   tcsetattr(ttyAMA0, TCSANOW, &t);
 
   char b[1024];
-  struct sockaddr_in server4352;
 
-  server4352.sin_addr.s_addr = xcsoar;
-  server4352.sin_family = AF_INET;
-  server4352.sin_port = htons(4352);
+  new std::thread(serial_send, ttyAMA0, serial_sock);
 
-  std::thread *send_thread = NULL;
-
-  try {
-    serial_socket = socket(AF_INET, SOCK_STREAM, 0);
-    if (connect(serial_socket, (struct sockaddr *)&server4352, sizeof(server4352)) < 0) throw(0);
-
-    send_thread = new std::thread(serial_send, &server4352, ttyAMA0);
-
-    while (serial_socket >= 0) {
-      ssize_t s = read(ttyAMA0, &b, sizeof b);
-      if (send(serial_socket, b, s, 0) != s) throw(0);
-    }
+  for (;;) {
+    ssize_t s = read(ttyAMA0, &b, sizeof b);
+    if (send(serial_sock, b, s, 0) != s) exit(1);
   }
-  catch ( ... )
-  {
-    terminate(ttyAMA0);
-  }
-
-  if (send_thread) send_thread->join();
 }

@@ -30,7 +30,7 @@ void read_config()
   config.ecomp = 0;
   config.noahrs = false;
   config.VarioAccel = fixed(.3);
-  config.audio.volume = 50;
+  config.audio.volume = 0; /* saved power */
   config.audio.speed2fly = true;
   config.audio.deadbandlow = -0.1;
   config.audio.deadbandhigh = 0.1;
