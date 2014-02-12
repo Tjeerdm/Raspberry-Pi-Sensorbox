@@ -31,6 +31,7 @@ Copyright_License {
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
+#include "Fixed.hpp"
 #include "serial.hpp"
 
 extern int sock;
