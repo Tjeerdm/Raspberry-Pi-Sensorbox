@@ -50,8 +50,10 @@ ToneSynthesiser::Synthesise(int16_t *buffer, size_t n)
 
   if (beep_file >= 0) {
     memset(buffer, 0, n*sizeof(*buffer));
-    if (read(beep_file, buffer, n * sizeof(*buffer))) return;
-    close(beep_file); beep_file = -1;  
+    size_t nn = read(beep_file, buffer, n * sizeof(*buffer));
+    if (nn == n) return;
+    close(beep_file); beep_file = -1;
+    if (nn) return;
   }
   for (int16_t *end = buffer + n; buffer != end; ++buffer) {
     *buffer = ISINETABLE[angle] * (32767 / 1024) * (int)volume / 100;
