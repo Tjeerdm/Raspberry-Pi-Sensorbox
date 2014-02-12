@@ -1,0 +1,4 @@
+#define HAVE_AIRDATA	0x1
+#define HAVE_MPU9150	0x2
+#define HAVE_SERIAL	0x4
+
