@@ -341,16 +341,22 @@ int main(int argc, char **argv)
       case PRESS:
         if (t < state_timer) break;
         ms5611_read_press(nr_of_sensors);
-//        if (ms5611[2].P > 150000) { state = IDLE; break; } still need this ???
-        staticp = ms5611[0].P;
-        totalp  = ms5611[1].P - offset;
         if (config.ecomp) {
+          staticp = ms5611[0].P;
+          totalp  = ms5611[1].P - offset;
           tep = (fixed(staticp) * (fixed(1) + fixed(config.ecomp)/100) - fixed(totalp))/100;
           fixed dt = fixed(t - last_press) * fixed(1e-6); 
           vkf.Update(tep, fixed(0.25), dt);
           last_press = t;
         } else {
-          // measure TE pressure and feed to kalman filter
+          /*
+           * Lowpass filter.
+           */
+          staticp = (staticp*3 + ms5611[0].P) / 4;
+          totalp  = (totalp*3 + ms5611[1].P - offset) / 4;
+          /*
+           * measure TE pressure and feed to kalman filter
+           */
           tep = fixed(ms5611[2].P)/100;
           fixed dt = fixed(t - last_press) * fixed(1e-6); 
           vkf.Update(tep, fixed(0.25), dt);
